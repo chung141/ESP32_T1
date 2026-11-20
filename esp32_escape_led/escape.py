@@ -7,8 +7,8 @@ import time
 from machine import Pin
 
 # ===== 사용자 설정 =====
-WIFI_SSID = "YOUR_WIFI_NAME"
-WIFI_PASSWORD = "YOUR_WIFI_PASSWORD"
+WIFI_SSID = "" #
+WIFI_PASSWORD = "" # 개인 와이파이 비밀번호이므로 지우고 커밋
 GAME_PASSWORD = "1234"       # 게임 비밀번호: 원하는 값으로 변경
 LED_PIN = 38                 # 외부 LED GPIO 번호
 # ======================
