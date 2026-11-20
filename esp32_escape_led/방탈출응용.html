@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>그림 단서 방탈출</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { --bg:#0d1524; --panel:#17243a; --panel2:#202f49; --mint:#65e3b2; --gold:#ffd166; --text:#f2f6ff; --sub:#b4c2d8; }
+    body { margin:0; min-height:100vh; padding:28px 20px; background:radial-gradient(circle at 15% 5%,#213653 0,#0d1524 45%); color:var(--text); font-family:Arial,"Malgun Gothic",sans-serif; }
+    .page { width:min(1120px,100%); margin:auto; }
+    header { text-align:center; margin:0 0 24px; }
+    .eyebrow { color:var(--mint); font-size:13px; font-weight:800; letter-spacing:2px; }
+    h1 { margin:8px 0; font-size:clamp(26px,4vw,38px); }
+    header p { margin:0; color:var(--sub); }
+    .game { display:grid; grid-template-columns:1.15fr .85fr; gap:18px; align-items:stretch; }
+    .panel { background:linear-gradient(145deg,#192740,#121d30); border:1px solid #344763; border-radius:20px; padding:20px; box-shadow:0 18px 45px #0005; }
+    .panel h2 { margin:0 0 14px; font-size:19px; }
+    .clues { display:grid; gap:10px; }
+    .clue { display:grid; grid-template-columns:84px 1fr; align-items:center; gap:15px; min-height:102px; padding:10px 14px; background:#ffffff08; border:1px solid #ffffff12; border-radius:14px; }
+    .clue svg { width:76px; height:76px; filter:drop-shadow(0 5px 8px #0005); }
+    .clue-label { color:var(--gold); font-size:12px; font-weight:800; letter-spacing:1px; margin-bottom:5px; }
+    .clue-title { font-size:18px; font-weight:800; margin-bottom:4px; }
+    .clue-desc { color:var(--sub); font-size:13px; line-height:1.4; }
+    .entry-panel { display:flex; flex-direction:column; }
+    .lock { display:grid; place-items:center; height:130px; margin:5px 0 15px; border-radius:16px; background:#0c1525; border:1px solid #344763; }
+    .lock svg { width:88px; height:88px; }
+    label { display:block; font-size:14px; font-weight:700; margin:6px 0 8px; }
+    input { width:100%; padding:15px; border:1px solid #536782; border-radius:11px; background:#0d1728; color:white; font-size:22px; letter-spacing:10px; text-align:center; outline:none; }
+    input:focus { border-color:var(--mint); box-shadow:0 0 0 3px #65e3b233; }
+    .device { margin-top:14px; }
+    .device input { font-size:16px; letter-spacing:normal; text-align:left; }
+    .buttons { display:flex; gap:10px; margin-top:14px; }
+    button { flex:1; padding:13px 10px; border:0; border-radius:10px; font-size:15px; font-weight:800; cursor:pointer; transition:transform .15s,filter .15s; }
+    button:hover { transform:translateY(-1px); filter:brightness(1.06); }
+    #unlock { background:var(--mint); color:#10231c; }
+    #lock { background:#dce5f1; color:#17243a; }
+    #hint { width:100%; margin-top:10px; background:#334560; color:#edf3ff; }
+    #status { min-height:44px; margin-top:14px; padding:10px 12px; border-radius:10px; background:#ffffff09; color:var(--sub); font-weight:700; line-height:1.45; }
+    .hint-text { display:none; color:#ffe29a; font-size:13px; line-height:1.5; margin:9px 2px 0; }
+    .foot { text-align:center; margin-top:17px; color:#8fa1ba; font-size:12px; line-height:1.5; }
+    @media(max-width:760px) { body{padding:20px 12px}.game{grid-template-columns:1fr}.panel{padding:15px}.clue{grid-template-columns:70px 1fr;min-height:92px}.clue svg{width:64px;height:64px} }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow">ESCAPE ROOM · 그림 암호</div>
+      <h1>네 개의 그림이 숨긴 비밀번호</h1>
+      <p>왼쪽 그림의 모양을 숫자로 바꾸어 네 자리 암호를 찾아보세요.</p>
+    </header>
+
+    <div class="game">
+      <section class="panel" aria-labelledby="clue-title">
+        <h2 id="clue-title">🧩 그림 단서</h2>
+        <div class="clues">
+          <article class="clue">
+            <svg viewBox="0 0 100 100" role="img" aria-label="길게 선 촛불과 불꽃">
+              <defs><linearGradient id="wax" x2="0" y2="1"><stop stop-color="#fff3c4"/><stop offset="1" stop-color="#e5b965"/></linearGradient></defs>
+              <ellipse cx="50" cy="84" rx="27" ry="7" fill="#152239" opacity=".7"/>
+              <path d="M50 10 C38 24 40 32 50 36 C61 31 62 22 50 10Z" fill="#ffb938"/>
+              <path d="M50 19 C45 26 47 30 50 31 C54 28 54 24 50 19Z" fill="#fff2b0"/>
+              <rect x="44" y="35" width="12" height="43" rx="4" fill="url(#wax)"/>
+              <path d="M39 78 Q50 84 61 78 L64 84 Q50 91 36 84Z" fill="#d9954f"/>
+              <path d="M50 35V30" stroke="#4d3424" stroke-width="2"/>
+            </svg>
+            <div><div class="clue-label">단서 1</div><div class="clue-title">촛불</div><div class="clue-desc">곧게 선 초와 불꽃의 모양을 떠올려 보세요.</div></div>
+          </article>
+          <article class="clue">
+            <svg viewBox="0 0 100 100" role="img" aria-label="목과 몸이 숫자 곡선처럼 이어진 백조">
+              <ellipse cx="52" cy="83" rx="34" ry="7" fill="#152239" opacity=".7"/>
+              <path d="M20 71 C38 79 67 78 76 66 C83 57 74 49 63 52 C54 54 55 62 65 63 C74 64 78 56 72 49 C65 40 52 42 48 33 C45 26 50 21 57 21 C64 21 67 28 63 32 C59 36 53 35 50 31" fill="none" stroke="#f5f7fb" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M48 24 Q54 15 63 20 L56 27Z" fill="#f5f7fb"/>
+              <circle cx="58" cy="22" r="1.7" fill="#152239"/>
+              <path d="M63 20 L72 23 L63 25Z" fill="#f08b42"/>
+              <path d="M14 78 Q30 74 45 78 M61 82 Q77 77 89 80" fill="none" stroke="#68c9d4" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <div><div class="clue-label">단서 2</div><div class="clue-title">백조</div><div class="clue-desc">백조의 목선이 그리는 곡선을 살펴보세요.</div></div>
+          </article>
+          <article class="clue">
+            <svg viewBox="0 0 100 100" role="img" aria-label="세 번 굽이치는 라면 면발이 담긴 그릇">
+              <ellipse cx="50" cy="82" rx="34" ry="7" fill="#152239" opacity=".7"/>
+              <path d="M20 62 Q50 74 80 62 L72 80 Q50 90 28 80Z" fill="#d84e43"/>
+              <ellipse cx="50" cy="62" rx="30" ry="10" fill="#fff1d2"/>
+              <path d="M28 56 C35 43 48 44 54 52 C60 61 72 59 75 49" fill="none" stroke="#f4c84a" stroke-width="6" stroke-linecap="round"/>
+              <path d="M26 51 C34 39 48 40 54 48 C60 56 71 54 76 44" fill="none" stroke="#f7d96e" stroke-width="4" stroke-linecap="round"/>
+              <path d="M31 47 C37 36 48 36 54 43 C60 50 69 49 73 40" fill="none" stroke="#fff0a6" stroke-width="3" stroke-linecap="round"/>
+              <path d="M18 63 Q50 73 82 63" fill="none" stroke="#a82f32" stroke-width="3"/>
+            </svg>
+            <div><div class="clue-label">단서 3</div><div class="clue-title">꼬불꼬불 라면</div><div class="clue-desc">그릇 속 면발이 굽이치는 횟수와 윤곽을 보세요.</div></div>
+          </article>
+          <article class="clue">
+            <svg viewBox="0 0 100 100" role="img" aria-label="종탑과 지붕 선이 숫자 모양을 이루는 교회">
+              <ellipse cx="51" cy="86" rx="38" ry="7" fill="#152239" opacity=".7"/>
+              <path d="M58 16 L22 58 L78 58 L78 82" fill="none" stroke="#e6edf8" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M49 22 L58 11 L67 22" fill="none" stroke="#f0bb56" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M58 11V5 M54 8H62" stroke="#f0bb56" stroke-width="3" stroke-linecap="round"/>
+              <path d="M19 58H83V82H30V70" fill="#405875" stroke="#e6edf8" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M50 69 Q58 59 66 69 V82 H50Z" fill="#17243a"/>
+              <path d="M38 67V74 M34 71H42" stroke="#f0bb56" stroke-width="2"/>
+            </svg>
+            <div><div class="clue-label">단서 4</div><div class="clue-title">교회 종탑</div><div class="clue-desc">첨탑과 건물의 선이 만드는 모양을 생각하세요.</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel entry-panel" aria-labelledby="entry-title">
+        <h2 id="entry-title">🔐 비밀번호 입력</h2>
+        <div class="lock" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <path d="M30 45V32a20 20 0 0 1 40 0v13" fill="none" stroke="#65e3b2" stroke-width="8" stroke-linecap="round"/>
+            <rect x="20" y="43" width="60" height="43" rx="10" fill="#263a56" stroke="#91a7c2" stroke-width="3"/>
+            <circle cx="50" cy="61" r="5" fill="#ffd166"/><path d="M50 66V75" stroke="#ffd166" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <label for="password">그림을 순서대로 숫자로 바꿔 입력하세요</label>
+        <input id="password" type="password" inputmode="numeric" maxlength="4" placeholder="● ● ● ●" autocomplete="off">
+        <div class="device">
+          <label for="device">ESP32-S3 주소</label>
+          <input id="device" inputmode="decimal" placeholder="예: 192.168.0.102" autocomplete="off">
+        </div>
+        <div class="buttons">
+          <button id="unlock" type="button">비밀번호 확인</button>
+          <button id="lockButton" type="button">LED 끄기</button>
+        </div>
+        <button id="hint" type="button">힌트 보기</button>
+        <div class="hint-text" id="hintText">그림의 물건 이름보다, 물건의 바깥 윤곽이 어떤 숫자처럼 보이는지 생각해 보세요.</div>
+        <div id="status" role="status" aria-live="polite">ESP32와 노트북을 같은 Wi-Fi에 연결하세요.</div>
+      </section>
+    </div>
+    <div class="foot">정답이면 ESP32-S3의 LED가 켜집니다. 그림을 위에서 아래 순서로 살펴보세요.</div>
+  </main>
+  <script>
+    const statusBox = document.getElementById('status');
+    async function sendAction(action) {
+      const host = document.getElementById('device').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+      const password = document.getElementById('password').value.trim();
+      if (!host || (action === 'unlock' && !password)) {
+        statusBox.textContent = action === 'unlock' ? 'ESP32 주소와 네 자리 비밀번호를 입력하세요.' : 'ESP32 주소를 입력하세요.';
+        statusBox.style.color = '#ffd166';
+        return;
+      }
+      statusBox.textContent = '암호를 확인하고 있습니다...';
+      statusBox.style.color = '#b4c2d8';
+      try {
+        const response = await fetch(`http://${host}/control`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `password=${encodeURIComponent(password)}&action=${encodeURIComponent(action)}`
+        });
+        const result = await response.json();
+        statusBox.textContent = result.message || '응답을 받았습니다.';
+        statusBox.style.color = result.ok ? '#65e3b2' : '#ff9b9b';
+      } catch (error) {
+        statusBox.textContent = 'ESP32에 연결할 수 없습니다. 주소와 Wi-Fi 연결을 확인하세요.';
+        statusBox.style.color = '#ff9b9b';
+      }
+    }
+    document.getElementById('unlock').addEventListener('click', () => sendAction('unlock'));
+    document.getElementById('lockButton').addEventListener('click', () => sendAction('lock'));
+    document.getElementById('password').addEventListener('keydown', event => {
+      if (event.key === 'Enter') sendAction('unlock');
+    });
+    document.getElementById('hint').addEventListener('click', () => {
+      const box = document.getElementById('hintText');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    });
+  </script>
+</body>
+</html>

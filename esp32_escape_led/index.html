@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESP32 방탈출 비밀번호</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #101827; color: #edf3ff; font-family: Arial, sans-serif; }
+    .card { width: min(100%, 430px); padding: 30px; background: #1b2940; border: 1px solid #344763; border-radius: 20px; box-shadow: 0 18px 50px #0006; }
+    h1 { margin: 0 0 8px; font-size: 25px; }
+    p { color: #b8c6db; line-height: 1.55; }
+    label { display: block; margin: 20px 0 7px; font-weight: 700; }
+    input { width: 100%; padding: 13px; border: 1px solid #526783; border-radius: 10px; background: #101827; color: white; font-size: 17px; }
+    .buttons { display: flex; gap: 10px; margin-top: 14px; }
+    button { flex: 1; padding: 13px 10px; border: 0; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    #unlock { background: #5ee0a0; color: #10251a; }
+    #lock { background: #d4deec; color: #1b2940; }
+    #status { min-height: 26px; margin-top: 18px; font-weight: 700; }
+    .hint { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🔐 방탈출 비밀번호</h1>
+    <p>ESP32-S3와 노트북을 같은 Wi-Fi에 연결한 다음, ESP32 주소와 비밀번호를 입력하세요.</p>
+
+    <label for="device">ESP32 주소</label>
+    <input id="device" inputmode="decimal" placeholder="예: 192.168.0.102" autocomplete="off">
+
+    <label for="password">비밀번호</label>
+    <input id="password" type="password" placeholder="비밀번호 입력" autocomplete="off">
+
+    <div class="buttons">
+      <button id="unlock" type="button">정답 확인</button>
+      <button id="lock" type="button">LED 끄기</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <p class="hint">ESP32 주소는 MicroPython 실행 창에 표시된 숫자입니다.</p>
+  </main>
+  <script>
+    const statusBox = document.getElementById('status');
+    async function sendAction(action) {
+      const host = document.getElementById('device').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+      const password = document.getElementById('password').value;
+      if (!host || !password) {
+        statusBox.textContent = 'ESP32 주소와 비밀번호를 입력하세요.';
+        statusBox.style.color = '#ffd166';
+        return;
+      }
+      statusBox.textContent = '확인 중...';
+      statusBox.style.color = '#b8c6db';
+      try {
+        const response = await fetch(`http://${host}/control`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `password=${encodeURIComponent(password)}&action=${encodeURIComponent(action)}`
+        });
+        const result = await response.json();
+        statusBox.textContent = result.message || '응답을 받았습니다.';
+        statusBox.style.color = result.ok ? '#5ee0a0' : '#ff8c8c';
+      } catch (error) {
+        statusBox.textContent = 'ESP32에 연결할 수 없습니다. 주소와 Wi-Fi를 확인하세요.';
+        statusBox.style.color = '#ff8c8c';
+      }
+    }
+    document.getElementById('unlock').addEventListener('click', () => sendAction('unlock'));
+    document.getElementById('lock').addEventListener('click', () => sendAction('lock'));
+    document.getElementById('password').addEventListener('keydown', event => {
+      if (event.key === 'Enter') sendAction('unlock');
+    });
+  </script>
+</body>
+</html>
