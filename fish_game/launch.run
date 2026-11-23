@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Linux / macOS / WSL launcher.  Usage: ./launch.run [ESP32_IP] [--camera N]
+cd "$(dirname "$0")" || exit 1
+PYTHON="${PYTHON:-python3}"
+ESP_IP="${ESP_IP:-172.30.1.93}"
+if [ -n "$1" ] && [ "${1#--}" = "$1" ]; then ESP_IP="$1"; shift; fi
+
+command -v "$PYTHON" >/dev/null 2>&1 || { echo "[오류] $PYTHON 없음 (Python 3.10~3.13 설치)"; exit 1; }
+if ! "$PYTHON" -c 'import cv2,numpy' >/dev/null 2>&1; then
+  echo '[설치] OpenCV / numpy...'
+  "$PYTHON" -m pip install 'opencv-python>=4.8' 'numpy>=1.24' || exit 1
+fi
+if ! "$PYTHON" -c 'import mediapipe' >/dev/null 2>&1; then
+  echo '[설치] MediaPipe (실패해도 LED 인식은 동작)...'
+  "$PYTHON" -m pip install 'mediapipe>=0.10,<0.11' || true
+fi
+echo "ESP32 주소: $ESP_IP   →  브라우저에서 http://localhost:8000"
+exec "$PYTHON" bridge.py --esp "$ESP_IP" "$@"

@@ -1,0 +1,4 @@
+opencv-python>=4.8
+numpy>=1.24
+# optional (hand tracking). Newer 0.10.3x builds use the Tasks API; bridge.py handles both.
+mediapipe>=0.10,<0.11
